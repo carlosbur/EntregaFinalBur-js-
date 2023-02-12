@@ -131,9 +131,25 @@ function agregarCarrito(producto){
         productosCarrito.push(producto)
         // seteo en el storage
         localStorage.setItem("Carrito", JSON.stringify(productosCarrito))
-    }else{
+        Swal.fire({
+            title: `Producto agregado!`,
+            text: `Agregaste 1 ${producto.nombreProducto} a tu Carrito de compras.`,
+            icon: "success",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "green",
+            timer: 3000,
+            imageUrl: `img/${producto.imagen}`
+        })
 
-    alert(`El Producto ${producto.nombreProducto} ya se encuentra en el Carrito!!!`)
+    }else{
+        Swal.fire({
+            title: `Atención!`,
+            text: `El producto ${producto.nombreProducto} ya se encuentra agregado a tu Carrito.`,
+            icon: "error",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "green",    
+            timer: 3000
+        })
 }
 }
 
@@ -155,6 +171,26 @@ function cargarCarrito(array){
         </div>
         `
         })
+        // Función para eliminar
+        array.forEach((prodCarrito)=>{
+            document.getElementById(`botonEliminar${prodCarrito.id}`).addEventListener("click", ()=>{
+                // eliminar del DOM
+                let cardProducto = document.getElementById(`productosCarrito${prodCarrito.id}`)
+                cardProducto.remove()
+                // elimnar del array
+                let prodEliminar = array.find(prod => prod.id == prodCarrito.id)
+                let posicion = array.indexOf(prodEliminar)
+                array.splice(posicion, 1)
+                // setear storage
+                localStorage.setItem("Carrito", JSON.stringify(array))
+                // recalcular el total
+                compraTotal(array)
+
+
+            })
+
+        })
+
         compraTotal(array)
     }
     
@@ -162,12 +198,11 @@ function cargarCarrito(array){
 // Función para calcular la compra total
 
 function compraTotal(array){
-    let acumulador = 0
-    for (let producto of array){
-        acumulador += producto.precio
-    }
-    precioTotal.innerHTML = `El precio total es $ ${acumulador}`
-    return acumulador
+    let total = array.reduce((acc, productosCarrito)=> acc + productosCarrito.precio, 0)
+    total == 0 ?
+    precioTotal.innerHTML = `No hay productos agregados en tu Carrito` : 
+    precioTotal.innerHTML = `El precio total es $ ${total}`
+    return total
 } 
 
 
@@ -205,3 +240,4 @@ botonCarrito.addEventListener("click", ()=> {
 // Código
 
 verCatalogo(listaProductos)
+
