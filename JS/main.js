@@ -7,8 +7,9 @@ let selectOrden = document.getElementById("selectOrden")
 let botonCarrito = document.getElementById("botonCarrito")
 let modalCarrito = document.getElementById("modal-bodyCarrito")
 let precioTotal = document.getElementById("precioTotal")
-
-
+let loaderTexto = document.getElementById("loaderTexto")
+let loader = document.getElementById("loader")
+let botonFinalizarCompra = document.getElementById("botonFinalizarCompra")
 
 
 // Array productos en Carrito
@@ -205,7 +206,36 @@ function compraTotal(array){
     return total
 } 
 
-
+function finalizarCompra(array){
+    Swal.fire({
+        title: `Desea finalizar su compra?`,
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonText: "Sí, seguro!",
+        confirmButtonColor: "green",
+        cancelButtonText: "No!!!",
+        cancelButtonColor: "orange",
+    }).then( (result) =>{
+        if(result.isConfirmed){
+            Swal.fire({
+                title: "Compra finalizada",
+                icon: "succes",
+                confirmButtonColor: "green",
+                text: "Muchas gracias por comprar en Budo Shop"
+            })
+            productosCarrito = []
+            localStorage.removeItem("Carrito")
+        }else{
+            Swal.fire({
+                title: "Compra cancelada",
+                icon: "warning",
+                confirmButtonColor: "red",
+                text: "Su compra fue anulada. Sus productos siguen en el Carrito",
+                timer: 3000,
+            })
+        }
+    })
+}
 
 // Eventos
 
@@ -236,8 +266,16 @@ botonCarrito.addEventListener("click", ()=> {
     cargarCarrito(productosCarrito)
 })
 
+botonFinalizarCompra.addEventListener("click", ()=>{
+    finalizarCompra(productosCarrito)
+})
+
 
 // Código
-
-verCatalogo(listaProductos)
+// Loader
+setTimeout(()=>{
+    loaderTexto.innerText = ""
+    loader.remove()
+    verCatalogo(listaProductos)
+}, 2000)
 

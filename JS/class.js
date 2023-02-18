@@ -3,7 +3,7 @@ class Producto{
     constructor (id, nombreProducto, precio, imagen) {
         this.id = id,
         this.nombreProducto = nombreProducto,
-        this.precio = precio
+        this.precio = precio,
         this.imagen = imagen
     }
 }
