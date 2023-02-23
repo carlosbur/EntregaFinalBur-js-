@@ -8,15 +8,19 @@ class Producto{
     }
 }
 
-// Instancio los primeros objetos de Producto
-const karategi = new Producto(1, "Karategi", 8400, "karategi.jpg")
-const guantines = new Producto(2, "Guantines", 3400, "guantines.jpg")
-const empeinera = new Producto(3, "Empeinera", 4400, "empeinera.jpg")
-const tobillera = new Producto(4, "Tobillera", 6400, "tobillera.jpg")
-
-
 // Creo el array de Productos y trabajo con el localStorage
 let listaProductos = []
+
+const cargarLista = async () => {
+    const response = await fetch("productos.json")
+    const data = await response.json()
+    for (let producto of data){
+        let nuevoProducto = new Producto (producto.id, producto.nombreProducto, producto.precio, producto.imagen)
+        listaProductos.push(nuevoProducto)
+    }
+    localStorage.setItem("Productos", JSON.stringify(listaProductos))
+}
+
 if(localStorage.getItem("Productos")){
     // listaProductos = JSON.parse(localStorage.getItem("Productos"))
     for (let producto of JSON.parse(localStorage.getItem("Productos"))){
@@ -24,8 +28,7 @@ if(localStorage.getItem("Productos")){
         listaProductos.push(storageProd)
     }
 }else{
-    listaProductos.push(karategi, guantines, empeinera, tobillera)
-    localStorage.setItem("Productos", JSON.stringify(listaProductos))
+    cargarLista()
 }
 
 

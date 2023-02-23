@@ -1,0 +1,38 @@
+
+[
+{
+    "id": 1, 
+    "nombreProducto": "Karategi", 
+    "precio": 8400,
+    "imagen": "karategi.jpg"
+},
+
+{
+    "id": 2, 
+    "nombreProducto": "Guantines", 
+    "precio": 3400,
+    "imagen": "guantines.jpg"
+},
+
+{
+    "id": 3, 
+    "nombreProducto": "Empeinera", 
+    "precio": 4400,
+    "imagen": "empeinera.jpg"
+},
+
+{
+    "id": 4, 
+    "nombreProducto": "Tobillera", 
+    "precio": 6400,
+    "imagen": "tobillera.jpg"
+},
+
+{
+    "id": 5, 
+    "nombreProducto": "Remera", 
+    "precio": 2700,
+    "imagen": "remera.jpg"
+}
+
+]

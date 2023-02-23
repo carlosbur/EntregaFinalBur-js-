@@ -217,11 +217,12 @@ function finalizarCompra(array){
         cancelButtonColor: "orange",
     }).then( (result) =>{
         if(result.isConfirmed){
+            let totalFinal = compraTotal(array)
             Swal.fire({
                 title: "Compra finalizada",
                 icon: "succes",
                 confirmButtonColor: "green",
-                text: "Muchas gracias por comprar en Budo Shop"
+                text: `Muchas gracias por su compra. Usted ha gastado $ ${totalFinal}`
             })
             productosCarrito = []
             localStorage.removeItem("Carrito")
