@@ -14,12 +14,22 @@ let botonFinalizarCompra = document.getElementById("botonFinalizarCompra")
 
 // Array productos en Carrito
 
-let productosCarrito
+let productosCarrito = []
 
-localStorage.getItem("Carrito") ? 
-    productosCarrito = JSON.parse(localStorage.getItem("Carrito")) : 
-    (productosCarrito = [], localStorage.setItem("Carrito", productosCarrito))
+if (localStorage.getItem("Carrito")){ 
+        for (let producto of JSON.parse(localStorage.getItem("Carrito"))){
+        // capturo cantidad del storage
+        let cantidadStorage = producto.cantidad
+        // instancio productos
+        let storageProd = new Producto (producto.id, producto.nombreProducto, producto.precio, producto.imagen)
+        // traigo la cantidad del storage
+        storageProd.cantidad = cantidadStorage
+        // pusheo el array
+        productosCarrito.push(storageProd)
+    }}else{
 
+    productosCarrito = [], localStorage.setItem("Carrito", productosCarrito)
+}
 // Funciones
 
 function verCatalogo(array){
@@ -145,7 +155,8 @@ function agregarCarrito(producto){
     }else{
         Swal.fire({
             title: `Atención!`,
-            text: `El producto ${producto.nombreProducto} ya se encuentra agregado a tu Carrito.`,
+            text: `El producto ${producto.nombreProducto} ya se encuentra agregado a tu Carrito.
+            Ingresa en el Carrito para modificar la cantidad y finalizar tu compra.`,
             icon: "error",
             confirmButtonText: "Ok",
             confirmButtonColor: "green",    
@@ -158,6 +169,7 @@ function agregarCarrito(producto){
 // Función para agregar productos al carrito de compras
 function cargarCarrito(array){
     modalCarrito.innerHTML = ""
+    // Imprimo las cards
     array.forEach((prodCarrito)=>{
         
         modalCarrito.innerHTML += `
@@ -165,15 +177,21 @@ function cargarCarrito(array){
             <img class="card-img-top" height="300px" src="img/${prodCarrito.imagen}" alt="${prodCarrito.nombreProducto}">
             <div class="card-body">
                     <h4 class="card-title">${prodCarrito.nombreProducto}</h4>
-                
-                    <p class="card-text">$${prodCarrito.precio}</p> 
+                    <p class="card-text">Precio unitario: $${prodCarrito.precio}</p> 
+                    <p class="card-text">Total de unidades: ${prodCarrito.cantidad}</p>
+                    <p class="card-text">Subtotal: $${prodCarrito.precio * prodCarrito.cantidad}</p>
+
+                    <button class= "btn btn-success" id="botonSumarUnidad${prodCarrito.id}"><i class=""></i>+1</button>
+                    <button class= "btn btn-danger" id="botonEliminarUnidad${prodCarrito.id}"><i class=""></i>-1</button> 
+
                     <button class= "btn btn-danger" id="botonEliminar${prodCarrito.id}"><i class="fas fa-trash-alt"></i></button>
             </div>    
         </div>
         `
         })
-        // Función para eliminar
+        // For Each para agregar functions
         array.forEach((prodCarrito)=>{
+            // function para eliminar
             document.getElementById(`botonEliminar${prodCarrito.id}`).addEventListener("click", ()=>{
                 // eliminar del DOM
                 let cardProducto = document.getElementById(`productosCarrito${prodCarrito.id}`)
@@ -186,7 +204,35 @@ function cargarCarrito(array){
                 localStorage.setItem("Carrito", JSON.stringify(array))
                 // recalcular el total
                 compraTotal(array)
-
+            
+                
+            })
+            // sumar unidad
+            document.getElementById(`botonSumarUnidad${prodCarrito.id}`).addEventListener("click", ()=>{
+                prodCarrito.sumarUnidad()
+                localStorage.setItem("Carrito", JSON.stringify(array))
+                cargarCarrito(array)
+            }) 
+            
+            // restar unidad
+            document.getElementById(`botonEliminarUnidad${prodCarrito.id}`).addEventListener("click", ()=>{
+                let cantidad = prodCarrito.restarUnidad()
+                // condicional para evitar que la cantidad baje de 1
+                if (cantidad < 1){
+                    let cardProducto = document.getElementById(`productosCarrito${prodCarrito.id}`)
+                    cardProducto.remove()
+                     // elimnar del array
+                    let prodEliminar = array.find(prod => prod.id == prodCarrito.id)
+                    let posicion = array.indexOf(prodEliminar)
+                    array.splice(posicion, 1)
+                    // setear storage
+                    localStorage.setItem("Carrito", JSON.stringify(array))
+                    // recalcular el total
+                    compraTotal(array)
+                }else{
+                    localStorage.setItem("Carrito", JSON.stringify(array))
+                }
+                cargarCarrito(array)
 
             })
 
@@ -199,7 +245,7 @@ function cargarCarrito(array){
 // Función para calcular la compra total
 
 function compraTotal(array){
-    let total = array.reduce((acc, productosCarrito)=> acc + productosCarrito.precio, 0)
+    let total = array.reduce((acc, productosCarrito)=> acc + (productosCarrito.precio * productosCarrito.cantidad), 0)
     total == 0 ?
     precioTotal.innerHTML = `No hay productos agregados en tu Carrito` : 
     precioTotal.innerHTML = `El precio total es $ ${total}`
