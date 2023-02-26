@@ -38,8 +38,7 @@ function verCatalogo(array){
     productosDiv.innerHTML = ""
     
     for(let producto of array){
-    //código para imprimir el array
-        //creamos un div padre de la card
+        //código para imprimir el array
         let nuevoProductodiv = document.createElement("div")
         nuevoProductodiv.className = "col-12 col-md-6 col-lg-4 my-3"
         nuevoProductodiv.innerHTML = `
@@ -59,9 +58,7 @@ function verCatalogo(array){
             agregarCarrito(producto)
 
     }    
-
 }
-
 }
 
 // Función para agregar nuevos productos
@@ -87,7 +84,7 @@ function agregarProducto(array){
 function buscarProd(buscado, array){
     let busqueda = array.filter(
         (prod) => prod.nombreProducto.toLowerCase().includes(buscado.toLowerCase()))
-    
+        // Uso un ternario 
         busqueda.length == 0 ? 
         (coincidencia.innerHTML = `<h3>No tenemos ${buscado} en nuestro stock de productos</h3>`, verCatalogo(busqueda)) :
         (coincidencia.innerHTML = ``, verCatalogo(busqueda))
@@ -124,7 +121,6 @@ function ordenAlfa(array){
         if (a.nombreProducto < b.nombreProducto) {
         return -1
         }
-        // a es igual b
         return 0
     })
     verCatalogo(alfabetico)
@@ -204,8 +200,7 @@ function cargarCarrito(array){
                 localStorage.setItem("Carrito", JSON.stringify(array))
                 // recalcular el total
                 compraTotal(array)
-            
-                
+                        
             })
             // sumar unidad
             document.getElementById(`botonSumarUnidad${prodCarrito.id}`).addEventListener("click", ()=>{
@@ -251,6 +246,8 @@ function compraTotal(array){
     precioTotal.innerHTML = `El precio total es $ ${total}`
     return total
 } 
+
+// Función que finaliza el proceso de compra
 
 function finalizarCompra(array){
     Swal.fire({
